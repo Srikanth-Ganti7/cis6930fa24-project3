@@ -72,20 +72,34 @@ def upload_file():
 def fetch_pdf():
     url = request.form['url']
     try:
+        # Fetch and process the PDF
         pdf_path = fetch_incidents(url)
         df = extract_incidents(pdf_path)
+
+        # Save to database
         db_path = 'resources/normanpd.db'
         save_to_database(df, db_path)
 
-        # Ensure clustering only proceeds if sufficient data exists
+        # Generate visualizations
         clustering_img = visualize_clustering(df)
         bar_graph_img = visualize_bar_graph(df)
         pie_chart_img = visualize_pie_chart(df)
 
-        return render_template('visualizations.html', clustering_img=clustering_img, bar_graph_img=bar_graph_img, pie_chart_img=pie_chart_img)
+        # Generate stats
+        stats = df['nature'].value_counts().to_dict()  # Generate stats from the 'nature' column
+
+        # Render the visualizations page with stats
+        return render_template(
+            'visualizations.html',
+            clustering_img=clustering_img,
+            bar_graph_img=bar_graph_img,
+            pie_chart_img=pie_chart_img,
+            stats=stats
+        )
     except Exception as e:
-        # Display the error message directly in the rendered template
-        return render_template('index.html', error=f"Error: {str(e)}")
+        # Render the index page with the error message
+        return render_template('index.html', error=f"Error processing the URL: {str(e)}")
+
 
 
 
