@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Incident Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        form {
+            margin: 20px auto;
+            text-align: center;
+        }
+        input[type="file"],
+        input[type="text"] {
+            margin: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        .remove-btn {
+            margin-left: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .remove-btn:hover {
+            background-color: darkred;
+        }
+    </style>
+    <script>
+        function addUrlField() {
+            const container = document.getElementById("url-fields");
+            const inputGroup = document.createElement("div");
+            inputGroup.className = "input-group";
+            inputGroup.innerHTML = `
+                <input type="text" name="urls[]" placeholder="Enter a PDF URL">
+                <button type="button" class="remove-btn" onclick="removeField(this)">Remove</button>
+            `;
+            container.appendChild(inputGroup);
+        }
+
+        function addFileField() {
+            const container = document.getElementById("file-fields");
+            const inputGroup = document.createElement("div");
+            inputGroup.className = "input-group";
+            inputGroup.innerHTML = `
+                <input type="file" name="files[]">
+                <button type="button" class="remove-btn" onclick="removeField(this)">Remove</button>
+            `;
+            container.appendChild(inputGroup);
+        }
+
+        function removeField(button) {
+            button.parentElement.remove();
+        }
+
+        function validateForm(event) {
+            const fileInputs = document.querySelectorAll('input[name="files[]"]');
+            const urlInputs = document.querySelectorAll('input[name="urls[]"]');
+
+            const hasFile = Array.from(fileInputs).some(input => input.value);
+            const hasUrl = Array.from(urlInputs).some(input => input.value);
+
+            if (!hasFile && !hasUrl) {
+                alert("Please upload at least one file or enter at least one URL.");
+                event.preventDefault();
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to the Incident Visualizer</h1>
+
+    <!-- Display Error Messages -->
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form action="/upload" method="post" enctype="multipart/form-data" onsubmit="validateForm(event)">
+        <h2>Upload Incident Reports</h2>
+
+        <!-- File Upload Section -->
+        <div id="file-fields">
+            <div class="input-group">
+                <input type="file" name="files[]">
+            </div>
+        </div>
+        <button type="button" onclick="addFileField()">Add Another File</button>
+
+        <h2>Enter PDF URLs</h2>
+
+        <!-- URL Submission Section -->
+        <div id="url-fields">
+            <div class="input-group">
+                <input type="text" name="urls[]" placeholder="Enter a PDF URL">
+            </div>
+        </div>
+        <button type="button" onclick="addUrlField()">Add Another URL</button>
+
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

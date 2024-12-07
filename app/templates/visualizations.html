@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Incident Data Visualizations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .visualization {
+            margin: 20px 0;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Incident Data Visualizations</h1>
+
+    {% if errors %}
+    <div class="error">
+        <h2>Errors Encountered</h2>
+        <ul>
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="visualization">
+        <h2>Clustering of Incidents</h2>
+        <img src="data:image/png;base64, {{ clustering_img }}" alt="Clustering Visualization">
+    </div>
+
+    <div class="visualization">
+        <h2>Number of Incidents by Nature</h2>
+        <img src="data:image/png;base64, {{ bar_graph_img }}" alt="Bar Graph Visualization">
+    </div>
+
+    <div class="visualization">
+        <h2>Proportion of Incidents by Nature</h2>
+        <img src="data:image/png;base64, {{ pie_chart_img }}" alt="Pie Chart Visualization">
+    </div>
+
+    <div class="visualization">
+        <h2>Incident Statistics</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nature</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for nature, count in stats.items() %}
+                <tr>
+                    <td>{{ nature }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="back-link">
+        <a href="/">Go Back</a>
+    </div>
+</body>
+</html>
